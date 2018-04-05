@@ -1,0 +1,61 @@
+#include <Servo.h>    
+#include <SPI.h>      
+#include "RF24.h"     
+
+Servo myServo1;
+Servo myServo3;
+Servo myServo4;
+Servo myServo2;
+Servo myServo5;
+
+RF24 radio(9,10);     
+
+const uint64_t pipe = 0xE8E8F0F0E1LL; 
+
+int data[4];
+
+int data1;
+int pos; 
+
+void setup(){
+
+  myServo1.attach(15); 
+  myServo3.attach(16); 
+  myServo4.attach(17); 
+  myServo2.attach(18); 
+  myServo5.attach(19); 
+
+  Serial.begin(9600);
+  radio.begin();                    
+  radio.openReadingPipe(1, pipe);   
+  radio.startListening();           
+  }
+
+void loop(){
+  if(radio.available())
+  {
+   radio.read(data,sizeof(data));
+
+    if(data[0] <41 && msg[0]>30)
+    {
+      data1 = msg[0], pos=map(data1, 31, 40, 175, 0);
+      myServo1.write(pos);
+    }
+    if(data[0] <51 && msg[0]>40)
+    {
+      data1 = msg[0], pos=map(data1, 41, 50, 175, 0);
+      myServo2.write(pos);
+    }
+      
+    if(data[0]<400 && data[0]>300)
+      {
+        data1 = data[0], pos=map(data1, 300, 400, 175, 0);
+      myServo3.write(pos);
+      }
+    if(data[1]<200 && data[1]>100)
+      {
+        data1 = data[0], pos=map(data1, 100, 200, 175, 0);
+      myServo4.write(pos);
+      }
+  }
+}
